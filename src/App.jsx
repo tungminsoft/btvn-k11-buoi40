@@ -3,9 +3,8 @@ import "./App.css";
 
 export default function App() {
   const [tasks, setTasks] = useState(localStorage.getItem("tasks") ? JSON.parse(localStorage.getItem("tasks")) : []);
-
+  const [task, setTask] = useState("");
   const inputRef = useRef(null);
-
 
   const isTaskValid = (task) => {
     if (task === "")
@@ -22,21 +21,20 @@ export default function App() {
   const handleAdd = (e) => {
     e.preventDefault();
 
-    let task = inputRef.current.value.trim();
-    let checkValid = isTaskValid(task);
+    const newTask = task.trim();
+    let checkValid = isTaskValid(newTask);
     if (checkValid.startsWith("0|")) {
       alert(checkValid.split("|")[1]);
       return;
     }
 
-    setTasks((prev)=>{
-      let newTasks = [...prev, { id: Date.now(), task, completed: false }];
-
+    setTasks((prev) => {
+      let newTasks = [...prev, { id: Date.now(), task: newTask, completed: false }];
       localStorage.setItem("tasks", JSON.stringify(newTasks));
 
       return newTasks
     })
-    inputRef.current.value = "";
+    setTask("");
     inputRef.current.focus();
   }
 
@@ -50,22 +48,21 @@ export default function App() {
     }
 
     setTasks((prev) => {
-      let newTasks =prev.map((i) => {
+      let newTasks = prev.map((i) => {
         if (i.id === item.id)
           i.task = task;
         return i;
       });
 
       localStorage.setItem("tasks", JSON.stringify(newTasks));
-      
+
       return newTasks
     });
   }
 
   const handleMark = (item) => {
-    console.log(item);
     setTasks((prev) => {
-      let newTasks =prev.map((i) => {
+      let newTasks = prev.map((i) => {
         if (i.id === item.id) {
           i.completed = !i.completed;
         }
@@ -73,7 +70,7 @@ export default function App() {
       });
 
       localStorage.setItem("tasks", JSON.stringify(newTasks));
-      
+
       return newTasks
     });
   }
@@ -83,10 +80,10 @@ export default function App() {
       return;
 
     setTasks((prev) => {
-      let newTasks =prev.filter((i) => i.id !== item.id);
+      let newTasks = prev.filter((i) => i.id !== item.id);
 
       localStorage.setItem("tasks", JSON.stringify(newTasks));
-      
+
       return newTasks
     });
   }
@@ -101,8 +98,10 @@ export default function App() {
           className="input"
           placeholder="What are your tasks for today?"
           spellcheck="false"
-          onKeyDown={(e) => e.key === "Enter" && handleAdd(e)}
+          value={task}
+          onChange={(e) => setTask(e.target.value)}
           ref={inputRef}
+          onKeyDown={(e) => e.key === "Enter" && handleAdd(e)}
         />
         <button id="submit" className="submit-btn" onClick={handleAdd}>
           Add
