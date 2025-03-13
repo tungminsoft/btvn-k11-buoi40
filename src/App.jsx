@@ -121,25 +121,6 @@ export default function App() {
             </div>
           </li>
         ))}
-
-
-        {/* <li className="task-item completed">
-          <span className="task-title">Design a website</span>
-          <div className="task-action">
-            <button className="task-btn edit">Edit</button>
-            <button className="task-btn done">Mark as undone</button>
-            <button className="task-btn delete">Delete</button>
-          </div>
-        </li>
-
-        <li className="task-item completed">
-          <span className="task-title">Design a website</span>
-          <div className="task-action">
-            <button className="task-btn edit">Edit</button>
-            <button className="task-btn done">Mark as undone</button>
-            <button className="task-btn delete">Delete</button>
-          </div>
-        </li> */}
       </ul>
     </main>
   );

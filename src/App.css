@@ -88,6 +88,8 @@ main {
 
 .task-title {
   flex: 1;
+  word-wrap: break-word;
+  overflow: hidden;
 }
 
 .task-action {
