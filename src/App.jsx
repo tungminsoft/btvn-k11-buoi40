@@ -1,36 +1,36 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./App.css";
 
 export default function App() {
-  const [tasks, setTasks] = useState(localStorage.getItem("tasks") ? JSON.parse(localStorage.getItem("tasks")) : []);
+  const [tasks, setTasks] = useState(JSON.parse(localStorage.getItem("tasks")) || []);
   const [task, setTask] = useState("");
   const inputRef = useRef(null);
 
   const isTaskValid = (task) => {
     if (task === "")
-      return "0|Task không được để trống";
+      return "Task không được để trống";
 
     if (tasks.some(item => item.task === task))
-      return "0|Task đã tồn tại";
+      return "Task đã tồn tại";
 
     if (task.length > 250)
-      return "0|Task không được quá 250 ký tự";
-
-    return "1|";
+      return "Task không được quá 250 ký tự";
   }
+
+  useEffect(() => {
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+  }, [tasks]);
+
   const handleAdd = (e) => {
     e.preventDefault();
 
     const newTask = task.trim();
-    let checkValid = isTaskValid(newTask);
-    if (checkValid.startsWith("0|")) {
-      alert(checkValid.split("|")[1]);
-      return;
-    }
+    const error = isTaskValid(newTask);
+    if (error)
+      return alert(error);
 
     setTasks((prev) => {
-      let newTasks = [...prev, { id: Date.now(), task: newTask, completed: false }];
-      localStorage.setItem("tasks", JSON.stringify(newTasks));
+      let newTasks = [{ id: Date.now(), task: newTask, completed: false },...prev];
 
       return newTasks
     })
@@ -44,11 +44,9 @@ export default function App() {
     if (task === oldTast)
       return;
 
-    let checkValid = isTaskValid(task);
-    if (checkValid.startsWith("0|")) {
-      alert(checkValid.split("|")[1]);
-      return;
-    }
+    const error = isTaskValid(task);
+    if (error)
+      return alert(error);
 
     setTasks((prev) => {
       let newTasks = prev.map((i) => {
@@ -56,9 +54,6 @@ export default function App() {
           i.task = task;
         return i;
       });
-
-      localStorage.setItem("tasks", JSON.stringify(newTasks));
-
       return newTasks
     });
   }
@@ -72,8 +67,6 @@ export default function App() {
         return i;
       });
 
-      localStorage.setItem("tasks", JSON.stringify(newTasks));
-
       return newTasks
     });
   }
@@ -84,9 +77,6 @@ export default function App() {
 
     setTasks((prev) => {
       let newTasks = prev.filter((i) => i.id !== item.id);
-
-      localStorage.setItem("tasks", JSON.stringify(newTasks));
-
       return newTasks
     });
   }
