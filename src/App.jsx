@@ -39,7 +39,10 @@ export default function App() {
   }
 
   const handleEdit = (item) => {
+    let oldTast = item.task;
     let task = prompt("Edit task", item.task).trim();
+    if (task === oldTast)
+      return;
 
     let checkValid = isTaskValid(task);
     if (checkValid.startsWith("0|")) {
